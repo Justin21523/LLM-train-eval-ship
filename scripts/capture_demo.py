@@ -56,9 +56,9 @@ def capture(port: int) -> None:
         page.wait_for_timeout(350)
         page.screenshot(path=SCREENSHOT_DIR / "03-rollback-gate.png", full_page=False)
 
-        page.evaluate("window.scrollTo(0, document.querySelector('#architecture').offsetTop)")
+        page.evaluate("window.scrollTo(0, document.querySelector('#journey').offsetTop)")
         page.wait_for_timeout(350)
-        page.screenshot(path=SCREENSHOT_DIR / "04-architecture.png", full_page=False)
+        page.screenshot(path=SCREENSHOT_DIR / "04-journey.png", full_page=False)
 
         page.evaluate("window.scrollTo(0, document.querySelector('#evidence').offsetTop)")
         page.wait_for_timeout(350)
@@ -96,7 +96,7 @@ def capture(port: int) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Capture portfolio demo screenshots and WebM.")
+    parser = argparse.ArgumentParser(description="Capture guided demo screenshots and WebM.")
     parser.add_argument("--port", type=int, default=4177)
     args = parser.parse_args()
 

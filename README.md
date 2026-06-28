@@ -1,58 +1,59 @@
 # LLM Train-Eval-Ship
 
-> 可公開展示給面試官看的 LLM MLOps portfolio demo：用 mock-safe 模式呈現「資料上傳 → 微調 → 自動評估 → 部署 → canary / rollback」的完整工程脈絡。
+> A portfolio-ready, mock-safe LLM MLOps release console that demonstrates the path from dataset readiness to adapter tuning, automated evaluation, canary deployment, and rollback decisions.
 
 ![LLM Train-Eval-Ship cover](docs/assets/cover.png)
 
-## 專案定位
+## Product Positioning
 
-LLM Train-Eval-Ship 是一個 **LLM 工程化控制台原型**。真實訓練大型模型需要 GPU、模型權重、資料治理與部署環境；本專案先把面試展示最重要的工程面做完整：
+LLM Train-Eval-Ship is a **guided LLM release operations prototype**. Real large-model training usually needs GPUs, private datasets, model weights, and production serving infrastructure. This project focuses on the parts users can safely inspect in public: release gates, evaluation evidence, deployment decisions, shared model-cache governance, and rollback readiness.
 
-| 面向 | 展示內容 | 目前狀態 |
+| Area | What users can inspect | Status |
 | --- | --- | --- |
-| 後端服務 | FastAPI health check、demo scenarios、pipeline run、eval scorecard、deployment manifest | 已完成 |
-| Mock-safe demo | 不需要 GPU、API key、模型權重或外部服務即可展示完整流程 | 已完成 |
-| 靜態作品頁 | GitHub Pages 可部署的互動控制台，第一屏直接呈現產品本體 | 已完成 |
-| 測試 | pytest backend smoke tests、static smoke、Docker build、Playwright capture | 已完成 |
-| 真實模型訓練 | LoRA/PEFT、DPO、vLLM/TGI production wiring | Roadmap |
+| Backend service | FastAPI health check, demo scenarios, pipeline run, eval scorecard, deployment manifest | Complete |
+| Mock-safe journey | Full release workflow without GPUs, API keys, model weights, or external services | Complete |
+| Static product demo | GitHub Pages guided release console with the actual workflow on the first screen | Complete |
+| Verification | pytest backend smoke tests, static smoke, Docker build, Playwright screenshots, WebM capture | Complete |
+| Real model execution | LoRA/PEFT, DPO, vLLM/TGI production wiring | Roadmap |
 
-## Demo 入口
+## Public Entry Points
 
-| 資源 | URL |
+| Resource | URL |
 | --- | --- |
-| Interactive Demo | https://justin21523.github.io/LLM-train-eval-ship/ |
-| Portfolio Case Study | https://justin21523.github.io/zh-TW/projects/llm-train-eval-ship/ |
-| GitHub Repo | https://github.com/Justin21523/LLM-train-eval-ship |
+| Interactive demo | https://justin21523.github.io/LLM-train-eval-ship/ |
+| Portfolio case study | https://justin21523.github.io/zh-TW/projects/llm-train-eval-ship/ |
+| GitHub repository | https://github.com/Justin21523/LLM-train-eval-ship |
 
-## 面試官 90 秒導覽
+## User Journey
 
-1. 打開 Interactive Demo，第一屏就是 LLM MLOps control plane。
-2. 點選三個 scenario：Support Copilot LoRA、Policy DPO Safety Pass、RAG Agent Regression Gate。
-3. 觀察每個 scenario 的 pipeline stage、AutoEval scorecard、latency budget、canary/rollback decision。
-4. 回到 README 看 Mermaid 架構圖與 API 表，確認這不是純 marketing page，而是有 backend contract、test、capture assets、deploy flow 的可展示專案。
+1. Open the interactive demo and start the guided release walkthrough.
+2. Choose one of three release candidates: Support Copilot LoRA, Policy DPO Safety Pass, or RAG Agent Regression Gate.
+3. Follow the checkpoint lane: dataset readiness, adapter registration, AutoEval, and release decision.
+4. Inspect the user decision panel to promote, hold, or roll back the adapter.
+5. Review the README diagrams and API contracts to understand the system boundary.
 
 ```mermaid
 flowchart LR
   A[Dataset upload] --> B[Schema and privacy gate]
-  B --> C[Fine-tune job<br/>LoRA / PEFT / DPO]
+  B --> C[Adapter tuning<br/>LoRA / PEFT / DPO]
   C --> D[AutoEval scorecard]
   D --> E{Release gate}
-  E -->|Pass| F[Deploy vLLM / TGI]
+  E -->|Pass| F[Deploy through vLLM / TGI]
   E -->|Regression| G[Rollback previous adapter]
   F --> H[Canary traffic]
-  H --> I[Promote or revert]
+  H --> I[Promote, hold, or revert]
 ```
 
-## 系統架構
+## System Architecture
 
 ```mermaid
 flowchart TB
   subgraph Browser[Browser / GitHub Pages]
-    UI[portfolio-web static control plane]
+    UI[Guided release console]
     Capture[Playwright screenshots and WebM]
   end
 
-  subgraph API[FastAPI demo backend]
+  subgraph API[FastAPI mock-safe backend]
     Health[/GET /healthz/]
     Scenarios[/GET /api/demo/scenarios/]
     Pipeline[/GET /api/demo/pipeline/:id/]
@@ -60,11 +61,11 @@ flowchart TB
     Deploy[/GET /api/demo/deployment-manifest/]
   end
 
-  subgraph ModelOps[Production roadmap boundary]
-    Cache[Shared HF cache paths]
+  subgraph Ops[Production roadmap boundary]
+    Cache[Shared Hugging Face cache paths]
     Train[LoRA / PEFT / DPO jobs]
     Serve[vLLM / TGI serving]
-    Rollback[Canary and rollback]
+    Rollback[Canary and rollback policy]
   end
 
   UI --> Scenarios
@@ -78,23 +79,23 @@ flowchart TB
   Capture --> UI
 ```
 
-## 資料流與控制流
+## Data And Control Flow
 
 ```mermaid
 sequenceDiagram
-  participant Reviewer as Interviewer
-  participant Demo as Static Demo
+  participant User as User
+  participant Demo as Static release console
   participant API as FastAPI
-  participant Store as Shared Cache Contract
+  participant Store as Shared cache contract
 
-  Reviewer->>Demo: choose scenario
-  Demo->>Demo: render deterministic mock state
-  Reviewer->>API: curl /api/demo/pipeline/support-copilot-lora
+  User->>Demo: choose release candidate
+  Demo->>Demo: render deterministic workflow state
+  User->>API: curl /api/demo/pipeline/support-copilot-lora
   API->>Store: read MODEL_STORE_ROOT / HF_HOME / TRANSFORMERS_CACHE / HF_HUB_CACHE
-  API-->>Reviewer: scenario + stages + scorecard + deployment manifest
+  API-->>User: scenario + checkpoints + scorecard + deployment manifest
 ```
 
-## 模組組織
+## Module Organization
 
 ```mermaid
 flowchart LR
@@ -113,16 +114,16 @@ flowchart LR
   Docs --> Media[cover, screenshots, WebM]
 ```
 
-## 技術 Stack
+## Technology Stack
 
-| Layer | Tech | 用途 |
+| Layer | Technology | Purpose |
 | --- | --- | --- |
-| Backend | Python, FastAPI, Uvicorn | Demo API、health check、pipeline contract |
-| Test | pytest, FastAPI TestClient | smoke tests |
-| Static demo | HTML, CSS, Vanilla JS | GitHub Pages interactive demo |
-| Media automation | Playwright, FFmpeg | screenshot assets 與 demo WebM |
-| Deployment | GitHub Actions, GitHub Pages, Docker, Nginx | static demo deployment and local container smoke |
-| LLM roadmap | Hugging Face cache, LoRA/PEFT, DPO, vLLM, TGI | 真實 production extension points |
+| Backend | Python, FastAPI, Uvicorn | Demo API, health check, pipeline contract |
+| Test | pytest, FastAPI TestClient | Smoke tests |
+| Static demo | HTML, CSS, Vanilla JS | GitHub Pages guided product journey |
+| Media automation | Playwright, FFmpeg | Screenshot assets and WebM walkthrough |
+| Deployment | GitHub Actions, GitHub Pages, Docker, Nginx | Static deployment and local container smoke |
+| LLM roadmap | Hugging Face cache, LoRA/PEFT, DPO, vLLM, TGI | Production extension points |
 
 ```mermaid
 mindmap
@@ -131,9 +132,9 @@ mindmap
       FastAPI
       Uvicorn
       pytest
-    Demo
+    Product Demo
       GitHub Pages
-      Vanilla JS
+      Guided user journey
       Playwright screenshots
       WebM walkthrough
     MLOps
@@ -148,17 +149,17 @@ mindmap
       TGI
 ```
 
-## API
+## API Contract
 
-| Method | Endpoint | 說明 |
+| Method | Endpoint | Purpose |
 | --- | --- | --- |
-| GET | `/healthz` | 服務狀態、demo mode、cache paths |
-| GET | `/api/demo/scenarios` | 三個展示 scenario |
-| GET | `/api/demo/pipeline/{scenario_id}` | scenario、pipeline stages、scorecard、deployment manifest |
-| GET | `/api/demo/eval-scorecard` | AutoEval mock scorecard |
-| GET | `/api/demo/deployment-manifest` | vLLM/TGI、canary、rollback manifest |
+| GET | `/healthz` | Service status, demo mode, cache paths |
+| GET | `/api/demo/scenarios` | Release candidates for the guided journey |
+| GET | `/api/demo/pipeline/{scenario_id}` | Scenario, checkpoints, scorecard, and deployment manifest |
+| GET | `/api/demo/eval-scorecard` | Mock AutoEval scorecard |
+| GET | `/api/demo/deployment-manifest` | vLLM/TGI, canary, and rollback manifest |
 
-## 本機啟動
+## Local Backend
 
 ```bash
 python3 -m venv .venv
@@ -179,14 +180,14 @@ curl http://127.0.0.1:8080/healthz
 curl http://127.0.0.1:8080/api/demo/pipeline/support-copilot-lora
 ```
 
-## 靜態 Demo
+## Static Demo
 
 ```bash
 python3 -m http.server 4177 --directory portfolio-web
 # open http://127.0.0.1:4177/
 ```
 
-## 測試與產生展示資產
+## Testing And Asset Capture
 
 ```bash
 python3 -m pytest
@@ -194,46 +195,46 @@ python3 scripts/capture_demo.py
 docker build -f docker/portfolio.Dockerfile -t llm-train-eval-ship-demo .
 ```
 
-產生的 assets：
+Generated assets:
 
-| Path | 用途 |
+| Path | Purpose |
 | --- | --- |
-| `docs/assets/cover.png` | README 與 portfolio cover |
+| `docs/assets/cover.png` | README and portfolio cover |
 | `docs/assets/screenshots/*.png` | Portfolio media gallery screenshots |
-| `docs/assets/demo/guided-demo.webm` | 可錄影展示的 walkthrough |
+| `docs/assets/demo/guided-demo.webm` | Guided walkthrough video |
 
-## 部署圖
+## Deployment Flow
 
 ```mermaid
 flowchart LR
   Dev[Local repo] --> Test[pytest + static smoke + capture]
   Test --> Push[git push main]
-  Push --> Actions[GitHub Actions deploy-pages]
+  Push --> Actions[GitHub Actions]
   Actions --> Pages[GitHub Pages static demo]
-  Pages --> Portfolio[Main portfolio project page]
-  Portfolio --> Reviewer[Interviewer opens public URLs]
+  Pages --> Portfolio[Portfolio project page]
+  Portfolio --> User[User opens public URLs]
 ```
 
-## Demo scenarios
+## Demo Scenarios
 
-| Scenario | Model | Method | Gate | Decision |
+| Scenario | Model | Method | Gate | User decision |
 | --- | --- | --- | --- | --- |
 | Support Copilot LoRA | Qwen2.5-7B-Instruct | LoRA / PEFT | Helpfulness + latency | Promote to 20% canary |
-| Policy DPO Safety Pass | Mistral-7B-Instruct | DPO | Safety refusal + jailbreak probes | Ship after review sign-off |
-| RAG Agent Regression Gate | Llama-3.1-8B-Instruct | Adapter refresh | Citation grounding + latency | Hold and rollback |
+| Policy DPO Safety Pass | Mistral-7B-Instruct | DPO | Safety refusal + jailbreak probes | Hold for policy approval |
+| RAG Agent Regression Gate | Llama-3.1-8B-Instruct | Adapter refresh | Citation grounding + latency | Roll back adapter |
 
-## 風險與誠實標示
+## Risks And Honest Boundaries
 
-| 風險 | 說明 | 目前處理 |
+| Risk | Explanation | Current handling |
 | --- | --- | --- |
-| 無 GPU / 無模型權重 | 真實 LoRA/DPO 訓練無法在公開 demo 執行 | 提供 mock-safe deterministic pipeline |
-| 外部服務不可用 | Hugging Face / model serving endpoint 可能需要金鑰或大型資源 | Demo 不依賴外部服務 |
-| Production serving 尚未接線 | vLLM/TGI 是 extension contract，不是假裝已上線 | README 與 UI 明確標示 roadmap |
-| 評估資料為 mock | Scorecard 用於展示架構，不代表真模型分數 | API 回傳 `mode=mock` 與 `runtime=mock-safe` |
+| No GPU or model weights | Real LoRA/DPO training cannot run in the public static demo | Deterministic mock-safe workflow |
+| External services unavailable | Hugging Face or serving endpoints may need credentials and large resources | Demo does not depend on external services |
+| Production serving not wired | vLLM/TGI integration is a contract boundary, not a live serving claim | UI and README label it as roadmap |
+| Mock evaluation data | Scorecard demonstrates architecture, not real model quality | API returns `mode=mock` and `runtime=mock-safe` |
 
-## 面試亮點
+## What This Demonstrates
 
-- 把一個薄 FastAPI skeleton 補成可展示、可測試、可部署、可截圖錄影的 portfolio demo。
-- 明確處理 LLM 專案常見限制：GPU、模型權重、外部服務、金鑰、重複下載 cache。
-- 用 API contract 和 mock-safe UI 表達 production MLOps 邏輯，而不是只做靜態 marketing。
-- 用 Playwright + FFmpeg 產出可重現的 screenshots 與 demo video assets。
+- Turning a thin FastAPI skeleton into a user-operable release journey.
+- Handling common LLM demo constraints: GPUs, model weights, external services, secrets, and shared cache paths.
+- Expressing production MLOps decisions through API contracts and mock-safe UI rather than a static marketing page.
+- Producing reproducible screenshots and video assets with Playwright and FFmpeg.

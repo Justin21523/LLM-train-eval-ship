@@ -24,14 +24,14 @@ SCENARIOS: list[dict[str, Any]] = [
     {
         "id": "policy-dpo-safety",
         "name": "Policy DPO Safety Pass",
-        "audience": "Trust and safety reviewers",
+        "audience": "Trust and safety operators",
         "base_model": "Mistral-7B-Instruct",
         "dataset": "4,200 preference pairs",
         "method": "DPO",
         "eval_suite": "Safety refusal, jailbreak probes, answer quality",
         "deploy_engine": "TGI",
         "risk": "Low",
-        "decision": "Ship after review sign-off",
+        "decision": "Ship after policy sign-off",
     },
     {
         "id": "rag-agent-regression",

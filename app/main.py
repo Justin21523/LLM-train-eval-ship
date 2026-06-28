@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="LLM Train-Eval-Ship",
-    description="Mock-safe train → eval → ship demo APIs for portfolio review.",
+    description="Mock-safe train → eval → ship APIs for a guided LLM release journey.",
     version="1.0.0",
     lifespan=lifespan,
 )
