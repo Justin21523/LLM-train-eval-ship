@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LLM Train-Eval-Ship | Portfolio Demo</title>
+    <meta
+      name="description"
+      content="Mock-safe LLM MLOps demo: dataset ingest, fine-tune, auto-eval, canary deploy, rollback, and shared model cache governance."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#workspace" aria-label="LLM Train-Eval-Ship demo home">
+        <span class="brand-mark">TES</span>
+        <span>
+          <strong>LLM Train-Eval-Ship</strong>
+          <small>Mock-safe MLOps demo</small>
+        </span>
+      </a>
+      <nav class="nav" aria-label="Demo sections">
+        <a href="#workspace">Workspace</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#evidence">Evidence</a>
+        <a href="https://github.com/Justin21523/LLM-train-eval-ship">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="workspace">
+      <section class="hero-shell">
+        <div class="hero-copy">
+          <p class="eyebrow">Portfolio-ready LLM MLOps Control Plane</p>
+          <h1>資料上傳、微調、自動評估到部署，一屏看懂。</h1>
+          <p>
+            這個 demo 用 deterministic mock flow 呈現真實 LLM train-eval-ship 團隊會關心的狀態：
+            dataset readiness、LoRA/DPO job、eval gate、canary deploy、rollback guard 與 Hugging Face cache governance。
+          </p>
+          <div class="hero-actions">
+            <button class="primary-action" id="runDemo" type="button">Run Demo Flow</button>
+            <a class="secondary-action" href="#evidence">View Screenshot States</a>
+          </div>
+        </div>
+
+        <section class="control-plane" aria-label="Interactive product workspace">
+          <div class="workspace-header">
+            <div>
+              <p class="panel-kicker">Active Pipeline</p>
+              <h2 id="scenarioTitle">Support Copilot LoRA</h2>
+            </div>
+            <span class="mode-pill">DEMO_MODE=mock</span>
+          </div>
+
+          <div class="workspace-grid">
+            <aside class="scenario-list" aria-label="Demo scenarios">
+              <button class="scenario active" data-scenario="support">
+                <span>Support Copilot LoRA</span>
+                <small>vLLM · 20% canary</small>
+              </button>
+              <button class="scenario" data-scenario="safety">
+                <span>Policy DPO Safety Pass</span>
+                <small>TGI · review sign-off</small>
+              </button>
+              <button class="scenario" data-scenario="rag">
+                <span>RAG Agent Regression Gate</span>
+                <small>vLLM · rollback hold</small>
+              </button>
+            </aside>
+
+            <div class="pipeline-board">
+              <div class="stage-row" id="stageRow" aria-label="Pipeline stages"></div>
+              <div class="metric-grid" aria-label="Evaluation scorecard">
+                <article class="metric-tile">
+                  <span>Overall</span>
+                  <strong id="overallScore">92.4</strong>
+                  <small>+5.3 over baseline</small>
+                </article>
+                <article class="metric-tile">
+                  <span>Grounding</span>
+                  <strong id="groundingScore">91.2</strong>
+                  <small>citation-backed answers</small>
+                </article>
+                <article class="metric-tile">
+                  <span>P95 Latency</span>
+                  <strong id="latencyScore">1.42s</strong>
+                  <small>canary budget: 1.8s</small>
+                </article>
+              </div>
+              <div class="decision-strip" id="decisionStrip">
+                Promote to 20% canary when latency budget remains stable.
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="section-band" id="architecture">
+        <div class="section-title">
+          <p class="eyebrow">Architecture Snapshot</p>
+          <h2>Mock-safe demo mirrors the production pipeline contract.</h2>
+        </div>
+        <div class="architecture-grid">
+          <article class="arch-unit">
+            <span>01</span>
+            <h3>Dataset Gate</h3>
+            <p>Schema validation, privacy tagging, train/eval split manifest, and sample card generation.</p>
+          </article>
+          <article class="arch-unit">
+            <span>02</span>
+            <h3>Fine-tune Job</h3>
+            <p>LoRA/PEFT or DPO job contract with adapter artifact registration under shared model storage.</p>
+          </article>
+          <article class="arch-unit">
+            <span>03</span>
+            <h3>AutoEval Gate</h3>
+            <p>Scorecard compares baseline, checkpoint, safety refusal accuracy, grounding, and latency.</p>
+          </article>
+          <article class="arch-unit">
+            <span>04</span>
+            <h3>Ship + Rollback</h3>
+            <p>vLLM/TGI deployment manifest, canary promotion target, and rollback trigger policy.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-band cache-band">
+        <div class="section-title compact">
+          <p class="eyebrow">Shared Cache Governance</p>
+          <h2>One model store, fewer duplicate downloads.</h2>
+        </div>
+        <div class="cache-map">
+          <span>MODEL_STORE_ROOT</span>
+          <span>HF_HOME</span>
+          <span>TRANSFORMERS_CACHE</span>
+          <span>HF_HUB_CACHE</span>
+        </div>
+      </section>
+
+      <section class="section-band" id="evidence">
+        <div class="section-title">
+          <p class="eyebrow">Screenshot-ready States</p>
+          <h2>面試官可以直接截圖、錄影、理解的展示畫面。</h2>
+        </div>
+        <div class="evidence-grid">
+          <article class="evidence-shot">
+            <div class="shot-visual train"></div>
+            <h3>Train → Eval → Ship timeline</h3>
+            <p>四階段 pipeline 狀態、duration、摘要與完成度一屏可見。</p>
+          </article>
+          <article class="evidence-shot">
+            <div class="shot-visual eval"></div>
+            <h3>AutoEval scorecard</h3>
+            <p>用 mock scorecard 展示 baseline comparison、safety gate、grounding rate 與 latency budget。</p>
+          </article>
+          <article class="evidence-shot">
+            <div class="shot-visual deploy"></div>
+            <h3>Canary and rollback</h3>
+            <p>部署引擎、流量比例、promotion target 和 rollback trigger 都能清楚說明。</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>LLM Train-Eval-Ship · FastAPI · GitHub Pages · mock-safe demo</span>
+      <a href="https://justin21523.github.io/zh-TW/projects/llm-train-eval-ship/">Portfolio case study</a>
+    </footer>
+
+    <script>
+      const scenarios = {
+        support: {
+          title: "Support Copilot LoRA",
+          scores: ["92.4", "91.2", "1.42s"],
+          decision: "Promote to 20% canary when latency budget remains stable.",
+          stages: ["Ingest complete", "LoRA complete", "AutoEval pass", "Canary ready"],
+        },
+        safety: {
+          title: "Policy DPO Safety Pass",
+          scores: ["95.1", "93.8", "1.36s"],
+          decision: "Ship after reviewer sign-off because safety refusal accuracy is above threshold.",
+          stages: ["Pairs checked", "DPO complete", "Safety pass", "TGI ready"],
+        },
+        rag: {
+          title: "RAG Agent Regression Gate",
+          scores: ["84.7", "79.9", "1.91s"],
+          decision: "Hold release and rollback to previous adapter because grounding and latency regressed.",
+          stages: ["Corpus ready", "Adapter complete", "Regression found", "Rollback hold"],
+        },
+      };
+
+      const stageRow = document.querySelector("#stageRow");
+      const title = document.querySelector("#scenarioTitle");
+      const overall = document.querySelector("#overallScore");
+      const grounding = document.querySelector("#groundingScore");
+      const latency = document.querySelector("#latencyScore");
+      const decision = document.querySelector("#decisionStrip");
+
+      function renderScenario(key) {
+        const scenario = scenarios[key];
+        title.textContent = scenario.title;
+        overall.textContent = scenario.scores[0];
+        grounding.textContent = scenario.scores[1];
+        latency.textContent = scenario.scores[2];
+        decision.textContent = scenario.decision;
+        stageRow.innerHTML = scenario.stages
+          .map((stage, index) => `<article class="stage-card"><small>0${index + 1}</small><strong>${stage}</strong></article>`)
+          .join("");
+      }
+
+      document.querySelectorAll(".scenario").forEach((button) => {
+        button.addEventListener("click", () => {
+          document.querySelectorAll(".scenario").forEach((item) => item.classList.remove("active"));
+          button.classList.add("active");
+          renderScenario(button.dataset.scenario);
+        });
+      });
+
+      document.querySelector("#runDemo").addEventListener("click", () => {
+        const keys = Object.keys(scenarios);
+        let index = 0;
+        const timer = setInterval(() => {
+          const key = keys[index % keys.length];
+          document.querySelectorAll(".scenario").forEach((item) => {
+            item.classList.toggle("active", item.dataset.scenario === key);
+          });
+          renderScenario(key);
+          index += 1;
+          if (index === 6) clearInterval(timer);
+        }, 900);
+      });
+
+      renderScenario("support");
+    </script>
+  </body>
+</html>

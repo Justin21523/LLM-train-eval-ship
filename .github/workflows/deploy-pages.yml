@@ -1,0 +1,37 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Publish static demo to gh-pages
+        run: |
+          set -euo pipefail
+          tmpdir="$(mktemp -d)"
+          cp -R portfolio-web/. "$tmpdir/"
+          touch "$tmpdir/.nojekyll"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages || true
+          git checkout --orphan gh-pages-publish
+          git rm -rf . >/dev/null 2>&1 || true
+          cp -R "$tmpdir"/. .
+          git add .
+          git commit -m "Deploy llm-train-eval-ship demo"
+          git push --force origin HEAD:gh-pages
